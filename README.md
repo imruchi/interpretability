@@ -18,6 +18,8 @@ finance_poc/
 ├── dataset.py        # Multiplication table dataset
 ├── train.py          # Training script
 ├── visualize.py      # Attention visualization utilities
+├── config.py         # Configuration and hyperparameters
+├── requirements.txt  # Python dependencies
 └── README.md         # This file
 ```
 
@@ -32,10 +34,21 @@ pip install torch numpy matplotlib seaborn tqdm
 
 ### 1. Train the model
 
+Basic training:
 ```bash
-cd finance_poc
 python train.py
 ```
+
+Custom training with arguments:
+```bash
+python train.py --epochs 100 --batch-size 64 --lr 0.0005
+```
+
+Available arguments:
+- `--epochs`: Number of training epochs (default: 50)
+- `--batch-size`: Batch size (default: 32)
+- `--lr`: Learning rate (default: 0.001)
+- `--device`: Device to use - 'mps', 'cuda', or 'cpu' (default: 'mps')
 
 This will:
 - Create a 12×12 multiplication table dataset

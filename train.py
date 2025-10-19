@@ -1,3 +1,11 @@
+"""
+Training script for tabular transformer on multiplication table task.
+
+This demonstrates mechanistic interpretability by training a transformer
+to predict masked cells in a multiplication table, which mirrors the task
+of predicting future balance sheet values in financial forecasting.
+"""
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -5,9 +13,11 @@ from torch.utils.data import DataLoader
 import numpy as np
 from tqdm import tqdm
 import os
+import argparse
 
 from model import TabularTransformerWithAttention
 from dataset import MultiplicationTableDataset, collate_fn
+import config
 
 
 def train_epoch(model, dataloader, optimizer, criterion, device):
@@ -175,15 +185,33 @@ def train_model(
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Train tabular transformer for mechanistic interpretability')
+    parser.add_argument('--epochs', type=int, default=config.NUM_EPOCHS, help='Number of training epochs')
+    parser.add_argument('--batch-size', type=int, default=config.BATCH_SIZE, help='Batch size')
+    parser.add_argument('--lr', type=float, default=config.LEARNING_RATE, help='Learning rate')
+    parser.add_argument('--device', type=str, default=config.DEVICE, help='Device (mps/cuda/cpu)')
+    args = parser.parse_args()
+
+    print("=" * 60)
+    print("Mechanistic Interpretability PoC: Multiplication Table")
+    print("=" * 60)
+    print(f"Configuration:")
+    print(f"  Table size: {config.MAX_ROW}x{config.MAX_COL}")
+    print(f"  Model: d_model={config.D_MODEL}, heads={config.NHEAD}, layers={config.NUM_LAYERS}")
+    print(f"  Training: epochs={args.epochs}, batch_size={args.batch_size}, lr={args.lr}")
+    print(f"  Device: {args.device}")
+    print("=" * 60)
+
     # Train the model
     model = train_model(
-        max_row=12,
-        max_col=12,
-        context_size=10,
-        d_model=64,
-        nhead=4,
-        num_layers=2,
-        batch_size=32,
-        num_epochs=50,
-        lr=0.001
+        max_row=config.MAX_ROW,
+        max_col=config.MAX_COL,
+        context_size=config.CONTEXT_SIZE,
+        d_model=config.D_MODEL,
+        nhead=config.NHEAD,
+        num_layers=config.NUM_LAYERS,
+        batch_size=args.batch_size,
+        num_epochs=args.epochs,
+        lr=args.lr,
+        device=args.device
     )
